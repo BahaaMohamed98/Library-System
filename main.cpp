@@ -47,7 +47,7 @@ struct book {
     string author;
     int pub_year;
     int book_ID;
-    bool available = true;
+    bool available{true};
 };
 
 vector<book> book_records;
@@ -55,7 +55,7 @@ vector<book> book_records;
 struct member {
     string member_name;
     int member_ID;
-    vector<string> borrowed_books;
+    vector<string> borrowed_books{};
 };
 
 vector<member> member_records;
@@ -67,6 +67,7 @@ int main() {
 void add_book() {
     string book_title, author;
     int pub_year;
+
     system("cls");
     cout << "Enter book details:\n\n";
     cin.ignore();
@@ -83,6 +84,7 @@ void add_book() {
     book new_book = {book_title, author, pub_year, ID, true};
     book_records.push_back(new_book);
     ID++;
+
     cout << "\nBook added successfully!\n";
     mini_menu();
 }
@@ -91,6 +93,7 @@ inline void main_menu() {
     system("cls");
     cout << "Welcome!\n\n";
     cout << "[1] Book options\n[2] Member options\n[3] Exit\nChoose operation: ";
+
     input:
     cin >> operation_num;
 
@@ -118,6 +121,7 @@ inline void book_menu() {
             "[6] Return to main menu\n[7] Exit\n";
     input:
     cin >> operation_num;
+
     switch (operation_num) {
         case 1:
             add_book();
@@ -131,6 +135,7 @@ inline void book_menu() {
                 system("cls");
                 cout << "Enter book tile: ";
                 getline(cin, title);
+
                 cout << "\nSearching...\n";
                 index = search_for_book(title);
 
@@ -149,15 +154,19 @@ inline void book_menu() {
         case 5://delete
             if (!book_records.empty()) {
                 char yesNO;
-                cin.ignore();
                 system("cls");
+
+                cin.ignore();
                 cout << "Enter book tile: ";
                 getline(cin, title);
+
                 cout << "\nSearching...\n";
                 index = search_for_book(title);
+
                 if (index != -1) {
-                    cout << "\nAre you sure you want to delete this member?[Y/N]";
+                    cout << "\nAre you sure you want to delete this book?[Y/N]";
                     cin >> yesNO;
+                    
                     if (yesNO == 'y' || yesNO == 'Y') {
                         book_records.erase(book_records.begin() + index);
                         cout << "\nBook deleted successfully!\n";
@@ -194,6 +203,7 @@ inline void member_menu() {
             "[6] Borrow a book\n[7] Return a book\n[8] Return to main menu\n[9] Exit\n";
     input:
     cin >> operation_num;
+
     switch (operation_num) {
         case 1:
             add_member();
@@ -239,7 +249,7 @@ inline void member_menu() {
 
 inline void mini_menu(int menu_number) {
     cout << "\n[1] Return to " << (menu_number != 1 ? "member" : "book") << " options\n"
-                                                                            "[2] Return to main menu\n[3] Exit\n";
+            "[2] Return to main menu\n[3] Exit\n";
     input:
     cin >> operation_num;
     switch (operation_num) {
@@ -268,8 +278,8 @@ void display_all_books() {
             cout << "Publication year: " << book.pub_year << "\n";
             cout << "Availability: " << (book.available ? "available" : "unavailable") << "\n";
             cout << "ID: " << book.book_ID << "\n";
-            cout << "========================\n";
         }
+        cout << "========================\n";
     }
     mini_menu();
 }
@@ -296,13 +306,15 @@ void update_book() {
     if (!book_records.empty()) {
         int choice_to_update, pub_year;
         string author;
+
         cin.ignore();
         system("cls");
         cout << "Enter book tile: ";
         getline(cin, title);
-        cout << "\nSearching...\n";
 
+        cout << "\nSearching...\n";
         int index = search_for_book(title);
+
         if (index != -1) {
             cout << "choose what to update:\n";
             cout << "\n[1] Title\n[2] Author\n[3] Publication year\n";
@@ -314,18 +326,21 @@ void update_book() {
                 case 1:
                     cout << "Enter new title: ";
                     getline(cin, title);
+
                     book_records[index].book_title = title;
                     cout << "\nTitle updated successfully!\n";
                     break;
                 case 2:
                     cout << "Enter new author: ";
                     getline(cin, author);
+
                     book_records[index].author = author;
                     cout << "\nAuthor updated successfully!\n";
                     break;
                 case 3:
                     cout << "Enter new publication year: ";
                     cin >> pub_year;
+
                     book_records[index].pub_year = pub_year;
                     cout << "\nPublication year updated successfully!\n";
                     break;
@@ -348,12 +363,16 @@ void add_member() {
     string name;
     cout << "Enter member details:\n";
     cin.ignore();
+
     cout << "Name: ";
     getline(cin, name);
+
     name[0] = (char) toupper(name[0]);
     cout << "\nMember added successfully!\n\n";
+
     cout << "Your member ID: " << member_ID << '\n';
     member newMember = {name, (int) member_ID};//why cast to int?
+
     member_records.push_back(newMember);
     member_ID++;
     mini_menu(2);
@@ -372,6 +391,7 @@ void display_all_members() {
             else {
                 for (int i = 0; i < member.borrowed_books.size() - 1; i++)
                     cout << member.borrowed_books[i] << " ,";
+
                 if (!member.borrowed_books.empty())
                     cout << member.borrowed_books[member.borrowed_books.size() - 1] << '\n';
             }
@@ -387,11 +407,13 @@ int search_menu() {
         system("cls");
         cout << "[1] Search by member name\n[2] Search by member ID\n";
         cin >> operation_num;
+
         index = (operation_num == 1 ? search_member(1) : search_member(2));
         return index;
     } else {
         system("cls");
         cout << "No member records available!\n";
+
         mini_menu(2);
         return -1;
     }
@@ -405,16 +427,20 @@ int search_member(int search_by) {//1=name 2=id
     if (search_by == 1) {
         cout << "Enter member name: ";
         getline(cin, name);
+
         name[0] = (char) toupper(name[0]);
         cout << "\nSearching...\n";
+
         for (int i = 0; i < member_records.size(); i++)
             if (member_records[i].member_name == name) return i;
         return -1;
     } else {
         cout << "Enter member ID: ";
         cin >> id;
+
         cout << "\nSearching...\n";
         cin.ignore();
+
         for (int i = 0; i < member_records.size(); i++)
             if (member_records[i].member_ID == id) return i;
         return -1;
@@ -430,7 +456,8 @@ void display_member(int index) {
     if (member_records[index].borrowed_books.empty()) cout << "none\n";
     else {
         for (int i = 0; i < member_records[index].borrowed_books.size() - 1; i++)
-            cout << member_records[index].borrowed_books[i] << " ,";
+            cout << member_records[index].borrowed_books[i] << ", ";
+
         if (!member_records[index].borrowed_books.empty())
             cout << member_records[index].borrowed_books[member_records[index].borrowed_books.size() - 1] << '\n';
     }
@@ -443,8 +470,10 @@ void update_member_name(int index) {
     system("cls");
     cout << "Enter new member name: ";
     getline(cin, name);
+
     name[0] = (char) toupper(name[0]);
     member_records[index].member_name = name;
+
     cout << "\nName updated successfully!\n";
     mini_menu(2);
 }
@@ -461,6 +490,7 @@ void delete_member() {
                 book_records[search_for_book(book)].available = true;
 
             member_records.erase(member_records.begin() + index);
+
             cout << "\nMember deleted successfully!\n";
             mini_menu(2);
         } else {
@@ -488,9 +518,12 @@ void borrow_book() {
             if (index != -1) {
                 if (book_records[index].available) {
                     cout << "\nBook was found!\n";
+
                     book_records[index].available = false;
+
                     cout << '\n' << member_records[index_m].member_name << " borrowed the book "
                          << book_records[index].book_title << ".\n";
+
                     member_records[index_m].borrowed_books.push_back(title);
                     mini_menu(2);
                 } else {
@@ -519,18 +552,21 @@ void return_book() {
             system("cls");
             cout << "Enter book tile: ";
             getline(cin, title);
-            cout << "\nSearching...\n";
 
+            cout << "\nSearching...\n";
             int index = search_for_book(title);
 
             if (index != -1) {
                 if (!book_records[index].available) {
                     cout << "\nBook was found!\n";
                     book_records[index].available = true;
+
+                    member_records[index_m].borrowed_books.erase(
+                                                member_records[index_m].borrowed_books.begin() + index);
+
                     cout << '\n' << member_records[index_m].member_name << " returned the book "
                          << book_records[index].book_title << ".\n";
-                    member_records[index_m].borrowed_books.erase(
-                            member_records[index_m].borrowed_books.begin() + index);
+
                     mini_menu(2);
                 } else {
                     cout << "\nBook is not borrowed!\n";
