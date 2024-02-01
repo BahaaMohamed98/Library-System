@@ -166,7 +166,7 @@ inline void book_menu() {
                 if (index != -1) {
                     cout << "\nAre you sure you want to delete this book?[Y/N]";
                     cin >> yesNO;
-                    
+
                     if (yesNO == 'y' || yesNO == 'Y') {
                         book_records.erase(book_records.begin() + index);
                         cout << "\nBook deleted successfully!\n";
@@ -249,7 +249,7 @@ inline void member_menu() {
 
 inline void mini_menu(int menu_number) {
     cout << "\n[1] Return to " << (menu_number != 1 ? "member" : "book") << " options\n"
-            "[2] Return to main menu\n[3] Exit\n";
+                                                                            "[2] Return to main menu\n[3] Exit\n";
     input:
     cin >> operation_num;
     switch (operation_num) {
@@ -390,13 +390,13 @@ void display_all_members() {
             if (member.borrowed_books.empty()) cout << "none\n";
             else {
                 for (int i = 0; i < member.borrowed_books.size() - 1; i++)
-                    cout << member.borrowed_books[i] << " ,";
+                    cout << member.borrowed_books.at(i) << ", ";
 
-                if (!member.borrowed_books.empty())
-                    cout << member.borrowed_books[member.borrowed_books.size() - 1] << '\n';
+                cout << member.borrowed_books.at(member.borrowed_books.size() - 1) << '\n';
             }
-            cout << "========================\n";
+
         }
+        cout << "========================\n";
     }
     mini_menu(2);
 }
@@ -521,10 +521,10 @@ void borrow_book() {
 
                     book_records[index].available = false;
 
+                    member_records[index_m].borrowed_books.push_back(title);
+
                     cout << '\n' << member_records[index_m].member_name << " borrowed the book "
                          << book_records[index].book_title << ".\n";
-
-                    member_records[index_m].borrowed_books.push_back(title);
                     mini_menu(2);
                 } else {
                     cout << "\nBook is not available!\n";
@@ -555,6 +555,10 @@ void return_book() {
 
             cout << "\nSearching...\n";
             int index = search_for_book(title);
+            int index_borrowed;
+
+            for (int i = 0; i < book_records.size(); ++i)
+                if (member_records[index_m].borrowed_books[i] == title) index_borrowed=i;
 
             if (index != -1) {
                 if (!book_records[index].available) {
@@ -562,7 +566,7 @@ void return_book() {
                     book_records[index].available = true;
 
                     member_records[index_m].borrowed_books.erase(
-                                                member_records[index_m].borrowed_books.begin() + index);
+                            member_records[index_m].borrowed_books.begin() + index_borrowed);
 
                     cout << '\n' << member_records[index_m].member_name << " returned the book "
                          << book_records[index].book_title << ".\n";
